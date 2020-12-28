@@ -1,0 +1,104 @@
+---
+title: "Sessions 1-2-3"
+output: html_notebook
+---
+loading the required packages
+```{r}
+require(tidyverse)
+require(dplyr)
+require(doBy)
+```
+R classes by Prof. Wininger from Yale.
+Session #1
+setting working directory and loading the dataset.
+```{r}
+setwd("R:\\CT DPH\\R classes")
+data = read_csv("2020-11-30TESTcases_scrub.csv")
+```
+
+exploring the df, inspecting the dimensionality
+```{r}
+str(data)
+head(data)
+```
+
+
+```{r}
+summary(data)
+dim(data)
+nrow(data)
+ncol(data)
+glimpse(data)
+```
+
+inspecting the data types of variables in the dataset
+```{r}
+class(data$fname)
+class(data$dob)
+```
+
+Session #2
+subsetting the df for females age 20-40(inclusive) - answer Should be 20,846 females age 20-40
+```{r}
+subdata = subset(data, gender == 'Female' & age >= 20 & age <= 40)
+subdata
+```
+
+take 2: using filter and piping
+```{r}
+data %>% filter(gender == 'Female' & age >= 20 & age <= 40)
+```
+
+checking if the subseting worked using table function
+```{r}
+table(data$age)
+```
+
+Show a proportional table of age via prop.table (HINT: nest your table command into the prop.table function!)
+```{r}
+prop.table(table(subdata$age))
+```
+
+Show a two-dimensional table of age versus ICU status (HINT: insert two arguments into your table function, and arrange age going left-to-right).
+```{r}
+table(subdata$icu,subdata$age)
+```
+
+Session #3
+Subset syntax: subset(df name, subset OR select(condition for rows/columns))
+summaryBy syntax: summaryBy(y~x, data = dfname, FUN = functionname)
+
+reducing the dataset to first 2000 cases/observations
+```{r}
+data2000 = data[1:2000, ]
+```
+
+Reduce dataset to eventid, preg, gender, age
+```{r}
+#take1
+#data2000 = data2000[ , c(1,20,8,7)]
+#take2
+data2000 = data2000[ , which(names(data2000) %in% c("eventid", "preg", "gender", "age"))]
+```
+
+Create a two-way table on preg versus gender - no pregnancies in males :) 
+```{r}
+table(data2000$gender, data2000$preg)
+```
+
+Summarize age per pregnancy status via summaryBy
+take 1:using summaryBy
+```{r}
+summaryBy(age~preg, data = data2000, FUN = sum)
+
+```
+
+take 2: using piping and dplyr
+```{r}
+data2000 %>% group_by(preg) %>% summarize(Age = sum(age))
+```
+
+
+```{r}
+```
+

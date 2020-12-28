@@ -1,0 +1,72 @@
+---
+title: "session4"
+author: "Pradeepti"
+date: "12/17/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+require(dplyr)
+require(tidyverse)
+```
+
+loading the dataset
+```{r}
+setwd("R:\\CT DPH\\R classes")
+df = read_csv("2020-11-30TESTcases_scrub.csv")
+```
+
+exploring the dimensions of the dataset
+```{r}
+str(df)
+summary(df)
+```
+
+Reduce dataset to first 10,000 cases
+```{r}
+newdf = df[1:10000, ]
+str(newdf)
+colnames(newdf)
+```
+
+Create a table of tests (tabulate the test types within the dataset)
+Hint: Should have 
+1 of COVID-19 PCR (CEPHEID) 
+1 of SARS CoV 2 Ab (IgG) 
+232 of SARS CoV 2 Ag (Quidel Sofia/Lumira), etcetera
+```{r}
+tests = newdf$test
+head(tests)
+```
+
+There is one REALLY long string that is making your table hard to read (“SARS-CoV-2 (COVID-19) N gene [Cycle Threshold #] in Unspecified specimen by Nucleic acid amplification using CDC primer-probe set N1”). Replace this with “Unspecified Specimen” by over-writing those elements of the vector. Hint: use the grep function.
+```{r}
+bad_inputs = grep("Unspecified Specimen", tests)
+head(bad_inputs)
+tests[bad_inputs]="Unspecified specimen"
+```
+
+Re-tabulate your results again to confirm the change
+```{r}
+table(tests)
+```
+
+Lastly, notice that the virus name is formatted inconsistently in the test variable: either SARS CoV 2, or SARS-Cov-2 (dashes, or not). Using a new function, gsub, fix this.
+```{r}
+tests=gsub("SARS CoV 2","SARS-CoV-2",tests)
+table(tests)
+```
+
+
+```{r}
+sum(is.na(df$phone))
+```
+
+
+```{r}
+```
+
