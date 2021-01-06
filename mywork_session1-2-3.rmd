@@ -1,16 +1,27 @@
 ---
-title: "Sessions 1-2-3"
-output: html_notebook
+title: "Sessions1-2-3"
+author: "Pradeepti"
+date: "12/10/2020"
+output: html_document
 ---
-loading the required packages
+R classes by Prof. Wininger from Yale.
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Installing the doBy package
+```{r}
+#install.packages("doBy", dependencies = TRUE)
+```
+
+loading the required packages to this session
 ```{r}
 require(tidyverse)
 require(dplyr)
 require(doBy)
 ```
-R classes by Prof. Wininger from Yale.
 Session #1
-setting working directory and loading the dataset.
+setting working directory and loading the dataset. remember to add 2 \\ for the file path
 ```{r}
 setwd("R:\\CT DPH\\R classes")
 data = read_csv("2020-11-30TESTcases_scrub.csv")
@@ -19,11 +30,6 @@ data = read_csv("2020-11-30TESTcases_scrub.csv")
 exploring the df, inspecting the dimensionality
 ```{r}
 str(data)
-head(data)
-```
-
-
-```{r}
 summary(data)
 dim(data)
 nrow(data)
@@ -31,27 +37,34 @@ ncol(data)
 glimpse(data)
 ```
 
+exploring the first few rows
+```{r}
+head(data)
+```
+
 inspecting the data types of variables in the dataset
 ```{r}
+class(data$eventid)
 class(data$fname)
-class(data$dob)
 ```
 
 Session #2
 subsetting the df for females age 20-40(inclusive) - answer Should be 20,846 females age 20-40
 ```{r}
-subdata = subset(data, gender == 'Female' & age >= 20 & age <= 40)
+subdata = subset(data, (gender == 'Female') & (age>=20) & (age<=40))
 subdata
+
 ```
 
 take 2: using filter and piping
 ```{r}
-data %>% filter(gender == 'Female' & age >= 20 & age <= 40)
+data %>% filter(gender == 'Female' & (age>=20) & (age<=40))
 ```
 
 checking if the subseting worked using table function
 ```{r}
 table(data$age)
+table(data$gender)
 ```
 
 Show a proportional table of age via prop.table (HINT: nest your table command into the prop.table function!)
@@ -62,6 +75,7 @@ prop.table(table(subdata$age))
 Show a two-dimensional table of age versus ICU status (HINT: insert two arguments into your table function, and arrange age going left-to-right).
 ```{r}
 table(subdata$icu,subdata$age)
+
 ```
 
 Session #3
@@ -74,11 +88,17 @@ data2000 = data[1:2000, ]
 ```
 
 Reduce dataset to eventid, preg, gender, age
+take1
 ```{r}
-#take1
-#data2000 = data2000[ , c(1,20,8,7)]
-#take2
-data2000 = data2000[ , which(names(data2000) %in% c("eventid", "preg", "gender", "age"))]
+data2000 = data2000[ , c(1,20,8,7)]
+head(data2000)
+```
+
+other options
+```{r}
+#data2000 = subset(data2000, select = c("eventid", "preg", "gender", "age"))
+#data2000 = data2000[ , which(names(data2000) %in% c("eventid", "preg", "gender", "age"))]
+head(data2000)
 ```
 
 Create a two-way table on preg versus gender - no pregnancies in males :) 
@@ -90,15 +110,10 @@ Summarize age per pregnancy status via summaryBy
 take 1:using summaryBy
 ```{r}
 summaryBy(age~preg, data = data2000, FUN = sum)
-
 ```
 
 take 2: using piping and dplyr
 ```{r}
-data2000 %>% group_by(preg) %>% summarize(Age = sum(age))
-```
-
-
-```{r}
+data2000 %>% group_by(preg) %>% summarize(mean_age = sum(age))
 ```
 
